@@ -34,6 +34,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
       loginIp: '',
     },
   };
+
+  
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
