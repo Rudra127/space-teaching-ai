@@ -6,56 +6,22 @@ import Image from 'next/image';
 const Logo = () => {
   const customizer = useSelector((state) => state.customizer);
   const LinkStyled = styled(Link)(() => ({
-    height: customizer.TopbarHeight,
-    width: customizer.isCollapse ? '40px' : '180px',
-    overflow: 'hidden',
-    display: 'block',
+    // height: customizer.TopbarHeight,
+    // width: customizer.isCollapse ? '40px' : '180px',
+    // overflow: 'hidden',
+    // display: 'block',
   }));
-
-  if (customizer.activeDir === 'ltr') {
-    return (
-      <LinkStyled href="/">
-        {customizer.activeMode === 'dark' ? (
-          <Image
-            src="/images/logos/main-logo-dark.png"
-            alt="logo"
-            height={customizer.TopbarHeight}
-            width={174}
-            className="m-2 mt-4"
-            priority
-          />
-        ) : (
-          <Image
-            src={'/images/logos/main-logo-dark.png'}
-            alt="logo"
-            height={customizer.TopbarHeight}
-            width={174}
-            priority
-          />
-        )}
-      </LinkStyled>
-    );
-  }
 
   return (
     <LinkStyled href="/">
-      {customizer.activeMode === 'dark' ? (
-        <Image
-          src="/images/logos/main-logo-dark.png.png"
-          alt="logo"
-          height={customizer.TopbarHeight}
-          width={174}
-          priority
-        />
-      ) : (
-        <Image
-          src="/images/logos/main-logo-dark.png"
-          alt="logo"
-          height={customizer.TopbarHeight}
-          width={174}
-          priority
-        />
-      )}
+      <Image
+        src="/images/xora.svg"
+        alt="logo"
+        className="flex justify-center items-center"
+        height={customizer.TopbarHeight}
+        width={70}
+        priority
+      />
     </LinkStyled>
   );
 };
