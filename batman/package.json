@@ -1,0 +1,23 @@
+{
+  "name": "default-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:user-ms": "cd user-ms && npm install",
+    "install:gateway": "cd gateway && npm install",
+    "install:all": "concurrently  \"npm run install:user-ms\" \"npm run install:gateway\"",
+    "dev:user-ms": "cd user-ms && npm run dev",
+    "dev:gateway": "cd gateway && nodemon",
+    "dev:all": "concurrently  \"npm run dev:user-ms\" \"npm run dev:gateway\"",
+    "start:user-ms": "cd user-ms && npm run start",
+    "start:gateway": "cd gateway && nodemon",
+    "start:all": "concurrently  \"npm run start:user-ms\" \"npm run start:gateway\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
