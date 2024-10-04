@@ -15,9 +15,10 @@ export const UserDataProvider = ({ children }) => {
 
     if (userData) {
       setUserData(userData);
-    } else {
-      router.push('/auth/login');
     }
+    // else {
+    //   router.push('/auth/login');
+    // }
   }, []);
 
   return <UserContext.Provider value={{ userData, setUserData }}>{children}</UserContext.Provider>;

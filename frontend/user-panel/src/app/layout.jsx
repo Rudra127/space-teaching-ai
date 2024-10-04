@@ -17,6 +17,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { UserDataProvider } from '@/store/useUserData';
+import './global.css';
 
 export const MyApp = ({ children }) => {
   const theme = ThemeSettings();
@@ -43,7 +44,7 @@ export const MyApp = ({ children }) => {
 
 export default function RootLayout({ children }) {
   const [loading, setLoading] = React.useState(false);
-  
+
   if (process.env.NODE_ENV === 'production') {
     // for production
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_PROD_AXIOS_URL;

@@ -2,6 +2,7 @@ import { uniqueId } from "lodash";
 
 import {
   IconAperture,
+  IconBook,
   IconBrandPaypal,
 } from "@tabler/icons-react";
 import { IconHelp } from "@tabler/icons-react";
@@ -23,14 +24,14 @@ const Menuitems = [
 
   {
     navlabel: true,
-    subheader: "Billing",
+    subheader: "Module",
   },
 
   {
     id: uniqueId(),
-    title: "Invoice",
-    icon: IconBrandPaypal,
-    href: "/Invoice",
+    title: "Module",
+    icon: IconBook,
+    href: "/Module",
   },
 
 
@@ -38,7 +39,7 @@ const Menuitems = [
     navlabel: true,
     subheader: "Support",
   },
-  { 
+  {
     id: uniqueId(),
     title: "Support",
     icon: IconHelp,
