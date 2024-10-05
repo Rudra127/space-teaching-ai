@@ -32,7 +32,7 @@ export default class userService {
         email: email,
         userId: existingUser.userId,
       });
-      const userUrl = `${process.env.MAIN_BACKEND_URL}/api/v1/user/auth/verify/${token}`;
+      const userUrl = `${process.env.MAIN_BACKEND_URL}/api/v1/auth/verify/${token}`;
       console.log(userUrl);
       return formateData({
         message: "verify your email address",

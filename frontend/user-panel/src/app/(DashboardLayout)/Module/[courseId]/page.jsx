@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Accordion,
   AccordionSummary,
@@ -14,52 +14,25 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Link from 'next/link';
-
-// Mock data for a course (replace this with actual API data in a real-world app)
-const courseData = {
-  id: 'exoplanets101',
-  title: 'Exploring Exoplanets',
-  description:
-    'Explore the fascinating world of exoplanets. Learn about their discovery, characteristics, and the future of space exploration.',
-  timeline: '8 Weeks',
-  lessons: [
-    {
-      id: 1,
-      title: 'Introduction to Exoplanets',
-      description: 'Overview of exoplanets and their significance.',
-    },
-    {
-      id: 2,
-      title: 'Methods of Detection',
-      description: 'Learn about the various methods used to detect exoplanets.',
-    },
-    {
-      id: 3,
-      title: 'The Search for Habitable Worlds',
-      description: 'Discover criteria for habitable worlds and promising candidates.',
-    },
-    {
-      id: 4,
-      title: 'Astrobiology and Life on Exoplanets',
-      description: 'A look into astrobiology and potential life on exoplanets.',
-    },
-  ],
-};
+import { courses } from '../../../../store/staticData';
 
 function CoursePage() {
   const { courseId } = useParams();
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [course, setCourse] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     if (courseId) {
-      // In real-world app, fetch course details using courseId
+      const courseData = courses.find((course) => course.id === courseId);
       setCourse(courseData);
     }
   }, [courseId]);
 
   const handleViewLesson = (lesson) => {
     setSelectedLesson(lesson);
+    console.log('lesson', lesson);
+    localStorage.setItem('lesson', JSON.stringify(lesson));
+    router.push(`/Module/${courseId}/lesson/${lesson.id}`);
   };
   return (
     <div className="p-8 min-h-screen">
@@ -90,17 +63,17 @@ function CoursePage() {
                     <Typography className="text-gray-300 leading-relaxed">
                       {lesson.description}
                     </Typography>
-                    <Link href={`/Module/${courseId}/lesson/${course.id}`}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginTop: '10px' }}
-                        className="bg-blue-500 hover:bg-blue-600  transition-colors duration-200 ease-in-out"
-                        onClick={() => handleViewLesson(lesson)}
-                      >
-                        View Lesson
-                      </Button>
-                    </Link>
+                    {/* <Link href={`/Module/${courseId}/lesson/${course.id}`}> */}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ marginTop: '10px' }}
+                      className="bg-blue-500 hover:bg-blue-600  transition-colors duration-200 ease-in-out"
+                      onClick={() => handleViewLesson(lesson)}
+                    >
+                      View Lesson
+                    </Button>
+                    {/* </Link> */}
                   </AccordionDetails>
                 </Accordion>
               ))}
@@ -118,9 +91,9 @@ function CoursePage() {
               <div className="flex items-center mt-2 mb-6">
                 {/* Timeline with Icon */}
 
-                <Typography variant="body1" className="text-gray-400 ">
+                {/* <Typography variant="body1" className="text-gray-400 ">
                   Timeline: {course.timeline}
-                </Typography>
+                </Typography> */}
               </div>
 
               {/* Course Progress */}
@@ -147,7 +120,7 @@ function CoursePage() {
               </Typography>
 
               {/* CTA Button */}
-              <Link href={`/Module/${courseId}/lesson/${course.id}`}>
+              <Link href={`/Module/${courseId}/lesson/1`}>
                 <Button
                   variant="contained"
                   color="primary"

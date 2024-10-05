@@ -9,7 +9,7 @@ const user = (app) => {
       .json({ message: "Welcome to user microservice" });
   });
 
-  app.post("/auth/register", async (req, res, next) => {
+  app.post("/api/v1/auth/register", async (req, res, next) => {
     try {
       const { email } = req.body;
 
@@ -27,7 +27,7 @@ const user = (app) => {
     }
   });
 
-  app.post("/auth/login", async (req, res, next) => {
+  app.post("/api/v1/auth/login", async (req, res, next) => {
     try {
       const { email, password } = req.body;
 
@@ -39,7 +39,7 @@ const user = (app) => {
     }
   });
 
-  app.post("/auth/forgotPassword", async (req, res, next) => {
+  app.post("/api/v1/auth/forgotPassword", async (req, res, next) => {
     try {
       const { email } = req.body;
       const { data } = await service.forgotPasswordRequestUrl({ email });
@@ -50,7 +50,7 @@ const user = (app) => {
   });
 
   app.post(
-    "/auth/forgotPassword/verify/:emailId/:token",
+    "/api/v1/auth/forgotPassword/verify/:emailId/:token",
     async (req, res, next) => {
       try {
         const { emailId, token } = req.params;
@@ -67,7 +67,7 @@ const user = (app) => {
       }
     }
   );
-  app.get("/auth/verify/:token", async (req, res, next) => {
+  app.get("/api/v1/auth/verify/:token", async (req, res, next) => {
     try {
       const { token } = req.params;
       const { data } = await service.Verify(req, token);
@@ -78,7 +78,7 @@ const user = (app) => {
     }
   });
 
-  app.post("/auth/verifyUser", async (req, res, next) => {
+  app.post("/api/v1/auth/verifyUser", async (req, res, next) => {
     try {
       const { userAuthToken: token } = req.cookies;
       if (!token) return res.json({ message: "token is required" });

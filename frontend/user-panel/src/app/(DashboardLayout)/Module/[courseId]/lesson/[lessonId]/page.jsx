@@ -2,86 +2,54 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Grid, Typography, Button, TextField } from '@mui/material';
+import { Grid, Typography, Button, TextField, Paper } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-// Mocked data for chat
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'; // Import skeleton CSS for better appearance
+
 const initialChat = [{ id: 1, message: 'Hello! How can I assist you today?', isUser: false }];
-
-// Mock markdown content (replace with actual content in real-world)
-const markdownContent = `
-# Introduction to Exoplanets
-
-## Learning Objectives
-- Define what an exoplanet is.
-- Understand the methods used to detect exoplanets.
-- Learn about the significance of exoplanet research.
-
----
-
-## What is an Exoplanet?
-An **exoplanet** (or extrasolar planet) is a planet that orbits a star outside of our solar system. Exoplanets can vary in size, composition, temperature, and location within the habitable zone of their respective stars. They are classified into several categories based on their mass, composition, and other characteristics.
-
----
-
-## Detection Methods
-Detecting exoplanets is challenging due to their faintness compared to their parent stars. Scientists use several indirect methods to discover these distant worlds:
-
-1. **Transit Method**: 
-   - When an exoplanet passes in front of its star, it blocks a small amount of light, causing a mini-eclipse. By measuring the duration and frequency of these mini-eclipses, scientists can determine the size and orbit of the exoplanet.
-
-2. **Doppler Shift**: 
-   - As an exoplanet orbits its star, it induces a slight wobble in the star. By measuring this wobble, scientists can infer the presence of an exoplanet and estimate its mass.
-
-3. **Direct Imaging**: 
-   - Using powerful telescopes and advanced techniques, scientists can directly observe the light reflected off the surface of an exoplanet. This method is most effective for planets far from their stars.
-
-4. **Gravitational Lensing**: 
-   - If an exoplanet passes in front of a background star, it can create a gravitational lens effect, bending and magnifying the star's light. Observing these distortions can help scientists detect the presence of an exoplanet.
-
----
-
-## Significance of Exoplanet Research
-Researching exoplanets is vital for understanding the formation and evolution of planetary systems beyond our own. It also aids in the search for extraterrestrial life. Key reasons for the significance of exoplanet research include:
-
-- **Understanding Planetary Formation**: 
-  - By studying exoplanets, scientists gain insights into how planets form and evolve in various star systems. This knowledge enhances our understanding of our own solar system and the potential for life on other planets.
-
-- **Searching for Life**: 
-  - Exoplanets located in the habitable zone, or "Goldilocks zone," of their stars have conditions suitable for liquid water. Since water is essential for life as we know it, these exoplanets are prime targets in the search for extraterrestrial life.
-
-- **Advancements in Technology**: 
-  - The search for exoplanets drives technological innovation, leading to the development of more powerful telescopes and advanced detection methods. These advancements benefit other areas of astronomy and science.
-
----
-
-## Key Takeaways
-- Exoplanets are planets that orbit stars outside of our solar system.
-- Scientists utilize various methods, including transit, Doppler shift, direct imaging, and gravitational lensing, to detect exoplanets.
-- Exoplanet research is crucial for understanding planetary formation, searching for life, and fostering technological advancements.
-
----
-
-## Conclusion
-In conclusion, exoplanets are captivating celestial bodies that provide valuable insights into the formation and evolution of planetary systems beyond our own. The methods used to detect exoplanets have led to significant technological advancements and expanded our understanding of the universe. As we continue to explore and study exoplanets, we may one day uncover evidence of extraterrestrial life.
-
-`;
 
 function Page() {
   const { lessonId } = useParams();
   const [chatHistory, setChatHistory] = useState(initialChat);
   const [inputMessage, setInputMessage] = useState('');
-  const [course, setCourse] = useState(null);
+  const [markDownContent, setMarkDownContent] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (lessonId) {
-      // In a real-world app, fetch course details using courseId
-      setCourse({
-        id: 'exoplanets101',
-        title: 'Exploring Exoplanets',
-      });
-    }
-  }, [lessonId]);
+    const fetchData = async () => {
+      try {
+        const lessonData = JSON.parse(localStorage.getItem('lesson'));
+        const body = {
+          user_id: '12',
+          question: lessonData.description,
+          heading: lessonData.title,
+        };
+
+        const res = await fetch('http://127.0.0.1:8000/api/v1/course/get_markdown_content', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setMarkDownContent(`${data.markdown_content}`);
+        } else {
+          console.error('Error:', res.statusText);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false); // Stop loading after fetching data
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
@@ -107,18 +75,45 @@ function Page() {
 
   return (
     <Grid container spacing={2}>
-      {/* Left Side: Markdown Renderer */}
+      {/* Left Side: Markdown Renderer with Skeleton */}
       <Grid item xs={12} sm={7}>
-        <div className="bg-gradient-to-br from-black via-gray-900 to-black p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+        <div className="h-full p-6 rounded-lg shadow-lg bg-gradient-to-br from-black via-gray-900 to-black hover:shadow-2xl transition-shadow duration-300 ease-in-out max-h-[640px] overflow-y-auto ">
           <div className="prose prose-invert w-full">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{markdownContent}</ReactMarkdown>
+            {loading ? (
+              // Show loading skeleton while fetching markdown content
+              <div>
+                {/* Title */}
+                <Skeleton width={600} height={40} baseColor="gray" className="mb-2 bg-gray-800" />
+
+                {/* Introduction Section */}
+                <Skeleton width={250} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={550} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
+
+                {/* Definition of Exoplanet */}
+                <Skeleton width={320} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={540} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
+
+                {/* Detection Methods */}
+                <Skeleton width={280} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={500} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
+              </div>
+            ) : (
+              // Render markdown content once data is loaded
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{markDownContent}</ReactMarkdown>
+            )}
           </div>
         </div>
       </Grid>
 
       {/* Right Side: Chat Interface */}
-      <Grid item xs={12} sm={5} className="">
-        <div className="bg-gradient-to-br from-black  via-gray-900 to-black p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out  flex flex-col justify-between ">
+      <Grid item xs={12} sm={5}>
+        <div className="bg-gradient-to-br from-black via-gray-900 to-black p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out flex flex-col justify-between">
           <div>
             <Typography variant="h6" className="text-white font-semibold pb-4">
               Chat with LLM

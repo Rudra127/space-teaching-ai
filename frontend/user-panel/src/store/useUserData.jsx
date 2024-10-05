@@ -8,7 +8,7 @@ const UserContext = createContext();
 // Create a context provider
 export const UserDataProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
-  console.log(userData);
+  // console.log(userData);
   const router = useRouter();
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('userData'));

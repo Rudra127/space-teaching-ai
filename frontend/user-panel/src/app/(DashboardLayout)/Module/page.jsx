@@ -3,15 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Grid, Button } from '@mui/material';
 import Breadcrumb from '@/app/(DashboardLayout)/layout/shared/breadcrumb/Breadcrumb';
 import Link from 'next/link';
-
-const courses = [
-  {
-    courseId: '1',
-    title: 'Introduction to Exoplanets',
-    description: 'Learn about the discovery and study of planets beyond our solar system.',
-    image: '/images/blog/blog-img1.jpg', // Replace with appropriate image
-  },
-];
+import { courses } from '../../../store/staticData';
 
 function Page() {
   const BCrumb = [
@@ -42,12 +34,12 @@ function Page() {
                 <Typography variant="h5" component="div" className="text-white">
                   {course.title}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" className="text-gray-400">
+                <Typography variant="body2" color="textSecondary" className="text-gray-400 pt-1">
                   {course.description}
                 </Typography>
               </CardContent>
               <div className="px-4 pb-4">
-                <Link href={`/Module/${course.courseId}`}>
+                <Link href={`/Module/${course.id}`}>
                   <Button
                     variant="contained"
                     className="w-full text-white bg-blue-600 hover:bg-blue-700"

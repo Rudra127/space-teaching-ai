@@ -19,7 +19,7 @@ async def get_markdown_content(request: QuestionRequest):
         response = course_services.retrieve_answer(request.question, request.heading)
 
         # Remove newline characters from the response
-        response = response.replace('\n', '')
+        # response = response.replace('\n', '')
 
         # Store the markdown content in Redis
         data_to_store = {"md_content": response}
