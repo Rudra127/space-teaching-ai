@@ -31,7 +31,7 @@ const AuthSocialButtons = ({ title, callbackUrl }) => (
         >
           {title}{' '}
         </Box>{' '}
-        Google
+        Google.
       </CustomSocialButton>
     </Stack>
   </>
