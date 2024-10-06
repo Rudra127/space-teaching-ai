@@ -8,13 +8,14 @@ import Skeleton from 'react-loading-skeleton';
 import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
 import 'react-loading-skeleton/dist/skeleton.css';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-
 const initialChat = [{ id: 1, message: 'Hello! How can I assist you today?', isUser: false }];
-
 function Page() {
   const { lessonId } = useParams();
   const [chatHistory, setChatHistory] = useState(initialChat);
   const [inputMessage, setInputMessage] = useState('');
+  const [text, setText] = useState(
+    'start teaching by giving a short info followed by asking a user engaging question',
+  );
   const [markDownContent, setMarkDownContent] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const [loading, setLoading] = useState(true);
@@ -40,17 +41,45 @@ function Page() {
           heading: lessonData.title,
         };
 
-        const res = await fetch('http://127.0.0.1:8000/api/v1/course/get_markdown_content', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const res = await fetch(
+          'https://space-teaching-ai-1.onrender.com/api/v1/course/get_markdown_content',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
           },
-          body: JSON.stringify(body),
-        });
+        );
 
         if (res.ok) {
           const data = await res.json();
-          setMarkDownContent(`${data.markdown_content}`);
+
+          const response = await fetch(
+            'https://space-teaching-ai-1.onrender.com/api/v1/teacher/chat',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                user_id: '12',
+                text: text,
+              }),
+            },
+          );
+          if (response.ok) {
+            const tutorData = await response.json();
+
+            setMarkDownContent(`${data.markdown_content}`);
+            const botResponse = {
+              id: chatHistory.length + 2,
+              message: tutorData.response,
+              isUser: false,
+            };
+            handleTextToSpeech(`${tutorData.response}`);
+            // setChatHistory((prev) => [...prev, botResponse]);
+          }
         } else {
           console.error('Error:', res.statusText);
         }
@@ -71,6 +100,7 @@ function Page() {
   }, [transcript]);
 
   const handleSendMessage = async () => {
+    // handleStopAudio();
     if (inputMessage.trim()) {
       const newChat = {
         id: chatHistory.length + 1,
@@ -78,21 +108,26 @@ function Page() {
         isUser: true,
       };
       setChatHistory([...chatHistory, newChat]);
+      setInputMessage('');
 
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/teacher/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          'https://space-teaching-ai-1.onrender.com/api/v1/teacher/chat',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user_id: '12',
+              text: inputMessage,
+            }),
           },
-          body: JSON.stringify({
-            user_id: '12',
-            text: inputMessage,
-          }),
-        });
+        );
 
         if (response.ok) {
           const data = await response.json();
+
           const botResponse = {
             id: chatHistory.length + 2,
             message: data.response,
@@ -100,6 +135,7 @@ function Page() {
           };
 
           setChatHistory((prev) => [...prev, botResponse]);
+          handleTextToSpeech(data.response);
         } else {
           console.error('Error:', response.statusText);
         }
@@ -159,6 +195,7 @@ function Page() {
 
       const combinedBlob = new Blob(audioChunks, { type: 'audio/mp3' });
       const combinedAudioUrl = URL.createObjectURL(combinedBlob);
+      console.log('combinedAudioUrl', combinedAudioUrl);
       setAudioUrl(combinedAudioUrl);
     } catch (err) {
       console.error('Error synthesizing speech:', err);
@@ -177,36 +214,57 @@ function Page() {
   };
 
   const stopListening = () => {
+    // handleStopAudio();
     SpeechRecognition.stopListening();
   };
 
+  const handleStopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause(); // Pause the audio
+      audioRef.current.currentTime = 0; // Reset to the beginning
+    }
+  };
+
   return (
-    <Grid container spacing={4} className="p-6">
+    <Grid container spacing={4} className="">
       <Grid item xs={12} sm={7}>
         <div className="h-full p-6 rounded-lg shadow-lg bg-gradient-to-br from-black via-gray-800 to-black max-h-[640px] overflow-y-auto">
           <div className="prose prose-invert w-full">
             {loading ? (
               <div>
                 <Skeleton width={600} height={40} baseColor="gray" className="mb-2 bg-gray-800" />
+
+                {/* Introduction Section */}
+                <Skeleton width={250} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={550} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
+
+                {/* Definition of Exoplanet */}
+                <Skeleton width={320} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={540} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
+
+                {/* Detection Methods */}
+                <Skeleton width={280} height={30} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={600} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={580} height={25} baseColor="gray" className="mb-2 bg-gray-400" />
+                <Skeleton width={500} height={25} baseColor="gray" className="mb-4 bg-gray-400" />
               </div>
             ) : (
               <>
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{markDownContent}</ReactMarkdown>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleTextToSpeech(markDownContent)}
-                  disabled={loadingAudio}
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg"
-                >
-                  {loadingAudio ? 'Converting to Audio...' : 'Convert to Audio'}
-                </Button>
+
                 {audioUrl && (
                   <div className="mt-4">
-                    <Typography variant="h6" className="text-white font-semibold pb-4">
-                      Audio Output
-                    </Typography>
-                    <audio controls src={audioUrl} className="w-full rounded-lg">
+                    <audio
+                      src={audioUrl}
+                      controls
+                      autoPlay
+                      className="w-full rounded-lg hidden"
+                      ref={async (audio) => audio && (await audio.play())}
+                    >
                       Your browser does not support the audio element.
                     </audio>
                   </div>
@@ -224,7 +282,7 @@ function Page() {
               Chat with LLM
             </Typography>
             <div className="chat-window p-4 rounded-md h-96 overflow-y-auto mb-4 bg-gray-800">
-              {chatHistory.map((chat) => (
+              {chatHistory?.map((chat) => (
                 <div
                   key={chat.id}
                   className={`flex mb-4 ${chat.isUser ? 'justify-end' : 'justify-start'}`}
@@ -235,14 +293,6 @@ function Page() {
                     }`}
                   >
                     <Typography variant="body1">{chat.message}</Typography>
-                    <Button
-                      variant="text"
-                      color="primary"
-                      onClick={() => handleTextToSpeech(chat.message)}
-                      className="mt-2 text-xs text-blue-300"
-                    >
-                      Convert to Audio
-                    </Button>
                   </div>
                 </div>
               ))}
@@ -282,7 +332,7 @@ function Page() {
                 listening ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'
               } text-white py-2 px-4 rounded-lg`}
             >
-              {listening ? 'Stop Listening' : '🎤 Start Voice Input'}
+              {listening ? 'Listening' : 'Record'}
             </Button>
           </div>
         </div>
