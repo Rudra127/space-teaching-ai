@@ -56,117 +56,40 @@ import { useRouter } from 'next/navigation';
 // ];
 
 const WebsiteCards = () => {
-  const [websiteCards, setWebsiteCards] = useState([]);
-  const { userData } = useUserData();
-  const router = useRouter();
-  useEffect(() => {
-    const fetchWebsites = async () => {
-      try {
-        console.log(userData);
-        const res = await axios.get(`/project/userId/${userData._id}`);
-        console.log(res.data);
-        setWebsiteCards(res.data.data.Projects);
-        if (res.status === 200) {
-          // toast.success('websites fetched successfully');
-        }
-      } catch (error) {
-        console.log(error);
-        if (error.response.status === 404) {
-          // toast.error('No Projects found!!');
-        }
-        if (error.response.status === 401) {
-          router.push('/auth/login');
-        }
-      }
-    };
-    if (userData.userId) {
-      fetchWebsites();
-    }
-  }, [userData]);
   return (
-    <Grid container spacing={3}>
-      {/* Top right corner button */}
-      {websiteCards.length > 0 && (
-        <Grid item xs={12}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Link href="/BuildWebsite">
-              <Button
-                variant="contained"
-                disabled={userData.subscriptionStatus !== 'active'}
-                sx={{ marginTop: '8px' }}
-              >
-                Create Website
-              </Button>
-            </Link>
-          </div>
-        </Grid>
-      )}
-      {/* Website cards */}
-      {websiteCards.length > 0 ? (
-        websiteCards.map((website, index) => (
-          <Grid item xs={12} md={4} lg={3} key={index}>
-            <BlankCard>
-              <Typography
-                component={Link}
-                href={website.projectDomain}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative"
-              >
-                <iframe
-                  src={website.projectDomain}
-                  title={`${website.title} preview`}
-                  style={{
-                    width: '100%',
-                    height: '200px',
-                    border: 'none',
-                    pointerEvents: 'none',
-                  }}
-                />
-                <Tooltip title="Visit Website">
-                  <Fab
-                    size="small"
-                    color="primary"
-                    sx={{ bottom: '-15px', right: '15px', position: 'absolute' }}
-                  >
-                    <IconLink size="16" />
-                  </Fab>
-                </Tooltip>
-              </Typography>
+    <div className="mb-4">
+      <div className="rounded-xl bg-gray-900 p-6 shadow-lg mb-8">
+        <div className="text-2xl font-bold text-white"> Exoplanet Exploration</div>
+        <Typography color="white" variant="body1"></Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          href="https://scratch.mit.edu/projects/141280959/fullscreen/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: '10px' }}
+        >
+          Exoplanet Game
+        </Button>
+      </div>
 
-              <CardContent sx={{ p: 3, pt: 2 }}>
-                <Typography variant="h6">{website.projectName}</Typography>
-                <Typography variant="subtitle2" color="textSecondary" mt={1}>
-                  {website.projectSummary}
-                </Typography>
-              </CardContent>
-            </BlankCard>
-          </Grid>
-        ))
-      ) : (
-        <>
-          {websiteCards.length == 0 && (
-            <Grid item xs={12}>
-              {/* <p className="ml-7 text-lg">No Websites found !!</p> */}
-              <Link href="/BuildWebsite">
-                <Button
-                  variant="contained"
-                  disabled={userData.subscriptionStatus !== 'active'}
-                  sx={{ marginTop: '8px', marginLeft: '28px' }}
-                >
-                  Create your first Website
-                </Button>
-              </Link>
-              {userData.subscriptionStatus !== 'active' && (
-                <p className="ml-10 mt-1 text-red-400 text-sm">
-                  * please select plan to create website
-                </p>
-              )}
-            </Grid>
-          )}
-        </>
-      )}
-    </Grid>
+      <div className="rounded-xl bg-gray-900 p-6 shadow-lg">
+        <div className="text-2xl font-bold text-white">GravityGame</div>
+        <Typography color="white" variant="body1">
+          gravity and exploration on different Exoplanets.
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          href="https://scratch.mit.edu/projects/676798770/fullscreen/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: '10px' }}
+        >
+          gravityGame
+        </Button>
+      </div>
+    </div>
   );
 };
 
