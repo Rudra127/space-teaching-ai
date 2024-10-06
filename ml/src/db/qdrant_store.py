@@ -5,7 +5,7 @@ embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-base-zh-v1.5")
 # Initialize Qdrant client and vector store
 client = qdrant_client.QdrantClient(
     url="https://22947d07-2eb1-420a-8811-be91e3977516.europe-west3-0.gcp.cloud.qdrant.io",
-    api_key="z4Geuytmf-lXPO2GCWlfuD6e8rb4jo9hXdLtTmSgUT_QIpCkjafC5w"
+    api_key="zUKWesVdftmJlQAHxK7xAcE1dMhnI8M4CzA1OUV0slUm6GOIXf7z5g"
 )
 
 # Vector configuration
